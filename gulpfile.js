@@ -22,6 +22,8 @@
 //   Plugins
 // -------------------------------------
 //
+// babelify          : Babel Browserify transform
+// browserify        : Browser-side require()
 // gulp              : The streaming build system
 // gulp-autoprefixer : Prefix CSS
 // gulp-coffee       : Compile CoffeeScript files
@@ -40,6 +42,8 @@
 // gulp-uglify       : Minify JavaScript with UglifyJS
 // gulp-util         : Utility functions
 // gulp-watch        : Watch stream
+// react             : React JavaScript library
+// reactify          : Browserify transform for JSX
 // run-sequence      : Run a series of dependent Gulp tasks in order
 //
 // -------------------------------------
