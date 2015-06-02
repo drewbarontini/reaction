@@ -6,7 +6,8 @@ A React application skeleton.
 Setup
 -----
 
-```
-$ npm install
-$ gulp
+```shell
+$ npm install # Install dependencies
+$ gulp        # Watch files
+$ npm start   # Run Node server
 ```
