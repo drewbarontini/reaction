@@ -12,7 +12,6 @@
 //   `gulp icons`
 //   `gulp lint:coffee`
 //   `gulp minify:css`
-//   `gulp minify:js`
 //   `gulp test:css`
 //   `gulp test:js`
 //
@@ -91,7 +90,7 @@ var options = {
 
   css : {
     files       : 'source/stylesheets/*.css',
-    file        : 'source/stylesheets/application.css',
+    file        : 'build/stylesheets/application.css',
     destination : 'build/stylesheets'
   },
 
@@ -161,9 +160,8 @@ gulp.task( 'browserify', function() {
   gulp.src( options.browserify.file )
     .pipe( plugins.plumber() )
     .pipe( plugins.browserify( {
-        debug: true,
-        transform: [ 'babelify', 'reactify' ]
-      } ) )
+      transform: [ 'babelify', 'reactify' ]
+    } ) )
     .pipe( plugins.uglify() )
     .pipe( plugins.concat( options.browserify.outputFile ) )
     .pipe( gulp.dest( options.browserify.destination ) );
@@ -237,21 +235,7 @@ gulp.task( 'minify:css', function () {
     .pipe( plugins.plumber() )
     .pipe( plugins.cssmin( { advanced: false } ) )
     .pipe( plugins.rename( { suffix: '.min' } ) )
-    .pipe( gulp.dest( options.build.destination ) );
-
-} );
-
-// -------------------------------------
-//   Task: Minify: JS
-// -------------------------------------
-
-gulp.task( 'minify:js', function () {
-
-  gulp.src( options.js.file )
-    .pipe( plugins.plumber() )
-    .pipe( plugins.uglify() )
-    .pipe( plugins.rename( { suffix: '.min' } ) )
-    .pipe( gulp.dest( options.build.destination ) );
+    .pipe( gulp.dest( options.css.destination ) );
 
 } );
 
