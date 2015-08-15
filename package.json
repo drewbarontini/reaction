@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "gulpfile.js",
-  "scripts": {
-    "start": "node server.js"
-  },
+  "scripts": {},
   "author": "Drew Barontini",
   "license": "ISC",
   "devDependencies": {
