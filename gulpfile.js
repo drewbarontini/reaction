@@ -7,10 +7,6 @@
 // Available tasks:
 //   `gulp`
 //   `gulp build`
-//   `gulp compile:coffee`
-//   `gulp compile:sass`
-//   `gulp icons`
-//   `gulp lint:coffee`
 //   `gulp minify:css`
 //   `gulp test:css`
 //   `gulp test:js`
@@ -25,8 +21,6 @@
 // browserify        : Browser-side require()
 // gulp              : The streaming build system
 // gulp-autoprefixer : Prefix CSS
-// gulp-coffee       : Compile CoffeeScript files
-// gulp-coffeelint   : Lint your CoffeeScript
 // gulp-concat       : Concatenate files
 // gulp-csscss       : CSS redundancy analyzer
 // gulp-jshint       : JavaScript code quality tool
@@ -36,8 +30,6 @@
 // gulp-plumber      : Prevent pipe breaking from errors
 // gulp-rename       : Rename files
 // gulp-sass         : Compile Sass
-// gulp-svgmin       : Minify SVG files
-// gulp-svgstore     : Combine SVG files into one
 // gulp-uglify       : Minify JavaScript with UglifyJS
 // gulp-util         : Utility functions
 // gulp-watch        : Watch stream
@@ -78,14 +70,6 @@ var options = {
     destination : 'build/javascripts'
   },
 
-  // ----- Coffee ----- //
-
-  coffee : {
-    files       : 'source/javascripts/src/*.coffee',
-    file        : 'app.js',
-    destination : 'build/javascripts'
-  },
-
   // ----- CSS ----- //
 
   css : {
@@ -102,28 +86,12 @@ var options = {
     destination : 'build/javascripts'
   },
 
-  // ----- Icons ----- //
-
-  icons : {
-    files       : 'source/images/icons/icon-*.svg',
-    destination : 'build/images/icons'
-  },
-
   // ----- Sass ----- //
 
   sass : {
     files       : 'source/stylesheets/*.sass',
     destination : 'build/stylesheets'
   },
-
-  // ----- Watch ----- //
-
-  watch : {
-    run : function() {
-      return [ options.coffee.files, options.js.files[0], options.js.files[1], options.sass.files ];
-    },
-    tasks : [ [ 'compile:sass' ], 'build' ]
-  }
 
 };
 
@@ -169,20 +137,6 @@ gulp.task( 'browserify', function() {
 });
 
 // -------------------------------------
-//   Task: Compile: Coffee
-// -------------------------------------
-
-gulp.task( 'compile:coffee', function() {
-
-  gulp.src( options.coffee.files )
-    .pipe( plugins.plumber() )
-    .pipe( plugins.coffee( { bare: true } ) )
-    .pipe( plugins.concat( options.coffee.file ) )
-    .pipe( gulp.dest( options.coffee.destination ) );
-
-} );
-
-// -------------------------------------
 //   Task: Compile: Sass
 // -------------------------------------
 
@@ -196,32 +150,6 @@ gulp.task( 'compile:sass', function () {
             cascade  : false
         } ) )
     .pipe( gulp.dest( options.sass.destination ) );
-
-} );
-
-// -------------------------------------
-//   Task: Icons
-// -------------------------------------
-
-gulp.task( 'icons', function() {
-
-  gulp.src( options.icons.files )
-    .pipe( plugins.svgmin() )
-    .pipe( plugins.svgstore( { inlineSvg: true } ) )
-    .pipe( gulp.dest( options.icons.destination ) );
-
-});
-
-// -------------------------------------
-//   Task: Lint Coffee
-// -------------------------------------
-
-gulp.task( 'lint:coffee', function () {
-
-  gulp.src( options.coffee.files )
-    .pipe( plugins.plumber() )
-    .pipe( plugins.coffeelint() )
-    .pipe( plugins.coffeelint.reporter() )
 
 } );
 
