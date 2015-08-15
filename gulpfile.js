@@ -107,6 +107,13 @@ var options = {
     destinationFile : 'build/index.html'
   },
 
+  // ----- Images ----- //
+
+  images : {
+    files       : 'source/images',
+    destination : 'build/images'
+  },
+
   // ----- JavaScript ----- //
 
   js : {
@@ -134,7 +141,7 @@ var options = {
     },
     run : function() {
       return [
-        [ 'html' ],
+        [ 'html', 'images' ],
         [ 'browserify' ],
         [ 'compile:sass', 'minify:css' ]
       ]
@@ -220,6 +227,18 @@ gulp.task( 'html', function() {
 
   gulp.src( options.html.files )
     .pipe( gulp.dest( options.html.destination ) )
+    .pipe( plugins.connect.reload() );
+
+});
+
+// -------------------------------------
+//   Task: Images
+// -------------------------------------
+
+gulp.task( 'images', function() {
+
+  gulp.src( options.images.files )
+    .pipe( gulp.dest( options.images.destination ) )
     .pipe( plugins.connect.reload() );
 
 });
