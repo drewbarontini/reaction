@@ -7,9 +7,14 @@
 // Available tasks:
 //   `gulp`
 //   `gulp build`
+//   `gulp browserify`
+//   `gulp compile:sass`
+//   `gulp connect`
+//   `gulp html`
 //   `gulp minify:css`
 //   `gulp test:css`
 //   `gulp test:js`
+//   `gulp watch`
 //
 // *************************************
 
@@ -22,6 +27,7 @@
 // gulp              : The streaming build system
 // gulp-autoprefixer : Prefix CSS
 // gulp-concat       : Concatenate files
+// gulp-connect      : Gulp plugin to run a webserver (with LiveReload)
 // gulp-csscss       : CSS redundancy analyzer
 // gulp-jshint       : JavaScript code quality tool
 // gulp-load-plugins : Automatically load Gulp plugins
@@ -70,12 +76,32 @@ var options = {
     destination : 'build/javascripts'
   },
 
+  // ----- Connect ----- //
+
+  connect : {
+    port : 9000,
+    base : 'http://localhost',
+    root : 'build',
+    open : {
+      url : 'http://localhost:9000',
+    }
+  },
+
   // ----- CSS ----- //
 
   css : {
     files       : 'source/stylesheets/*.css',
     file        : 'build/stylesheets/application.css',
     destination : 'build/stylesheets'
+  },
+
+  // ----- HTML ----- //
+
+  html : {
+    files           : 'source/*.html',
+    file            : 'source/index.html',
+    destination     : 'build',
+    destinationFile : 'build/index.html'
   },
 
   // ----- JavaScript ----- //
@@ -99,13 +125,7 @@ var options = {
 //   Task: Default
 // -------------------------------------
 
-gulp.task( 'default', function() {
-
-  plugins.watch( options.watch.run(), function( files ) {
-    run( options.watch.tasks[0], options.watch.tasks[1] );
-  } );
-
-} );
+gulp.task( 'default', [ 'build', 'connect', 'watch' ] );
 
 // -------------------------------------
 //   Task: Build
@@ -132,7 +152,8 @@ gulp.task( 'browserify', function() {
     } ) )
     .pipe( plugins.uglify() )
     .pipe( plugins.concat( options.browserify.outputFile ) )
-    .pipe( gulp.dest( options.browserify.destination ) );
+    .pipe( gulp.dest( options.browserify.destination ) )
+    .pipe( plugins.connect.reload() );
 
 });
 
@@ -149,9 +170,37 @@ gulp.task( 'compile:sass', function () {
             browsers : [ 'last 2 versions' ],
             cascade  : false
         } ) )
-    .pipe( gulp.dest( options.sass.destination ) );
+    .pipe( gulp.dest( options.sass.destination ) )
+    .pipe( plugins.connect.reload() );
 
 } );
+
+// -------------------------------------
+//   Task: Connect
+// -------------------------------------
+
+gulp.task( 'connect', function() {
+
+  plugins.connect.server( {
+    root       : [ options.connect.root ],
+    port       : options.connect.port,
+    base       : options.connect.base,
+    livereload : true
+  } );
+
+});
+
+// -------------------------------------
+//   Task: HTML
+// -------------------------------------
+
+gulp.task( 'html', function() {
+
+  gulp.src( options.html.files )
+    .pipe( gulp.dest( options.html.destination ) )
+    .pipe( plugins.connect.reload() );
+
+});
 
 // -------------------------------------
 //   Task: Minify: CSS
@@ -163,7 +212,8 @@ gulp.task( 'minify:css', function () {
     .pipe( plugins.plumber() )
     .pipe( plugins.cssmin( { advanced: false } ) )
     .pipe( plugins.rename( { suffix: '.min' } ) )
-    .pipe( gulp.dest( options.css.destination ) );
+    .pipe( gulp.dest( options.css.destination ) )
+    .pipe( plugins.connect.reload() );
 
 } );
 
@@ -193,5 +243,17 @@ gulp.task( 'test:js', function() {
     .pipe( plugins.plumber() )
     .pipe( plugins.jshint() )
     .pipe( plugins.jshint.reporter( 'default' ) )
+
+});
+
+// -------------------------------------
+//   Task: Watch
+// -------------------------------------
+
+gulp.task( 'watch', function() {
+
+  gulp.watch( options.html.files, [ 'html' ] );
+  gulp.watch( options.js.files, [ 'browserify' ] );
+  gulp.watch( options.sass.files, [ 'compile:sass', 'minify:css' ] );
 
 });
