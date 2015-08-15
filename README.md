@@ -8,8 +8,7 @@ Setup
 
 ```shell
 $ npm install # Install dependencies
-$ gulp        # Watch files
-$ npm start   # Run Node server
+$ gulp        # Build, run server, watch files
 ```
 
-View site at `http://locahost:8080`.
+View site at `http://locahost:9000`.
