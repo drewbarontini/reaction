@@ -77,7 +77,7 @@ var options = {
   // ----- Browserify ----- //
 
   browserify : {
-    file        : 'source/javascripts/app.jsx',
+    file        : 'source/javascripts/main.js',
     outputFile  : 'application.js',
     destination : 'build/javascripts'
   },
@@ -110,8 +110,8 @@ var options = {
   // ----- JavaScript ----- //
 
   js : {
-    files       : [ 'source/javascripts/app.jsx', 'source/javascripts/**/*.js' ],
-    file        : 'source/javascripts/app.js',
+    files       : [ 'source/javascripts/main.js', 'source/javascripts/**/*.js' ],
+    file        : 'source/javascripts/main.js',
     destination : 'build/javascripts'
   },
 
