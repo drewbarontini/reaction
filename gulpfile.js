@@ -64,7 +64,7 @@ var options = {
   // ----- Build ----- //
 
   build : {
-    tasks       : [ 'minify:css', 'browserify' ],
+    tasks       : [ 'minify:css', 'browserify', 'html' ],
     destination : 'build/'
   },
 
