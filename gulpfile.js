@@ -11,6 +11,7 @@
 //   `gulp compile:sass`
 //   `gulp connect`
 //   `gulp html`
+//   `gulp images`
 //   `gulp minify:css`
 //   `gulp test:css`
 //   `gulp test:js`
