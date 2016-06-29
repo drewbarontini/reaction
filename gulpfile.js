@@ -23,35 +23,40 @@
 //   Plugins
 // -------------------------------------
 //
-// babelify          : Babel Browserify transform
-// browserify        : Browser-side require()
-// gulp              : The streaming build system
-// gulp-autoprefixer : Prefix CSS
-// gulp-concat       : Concatenate files
-// gulp-connect      : Gulp plugin to run a webserver (with LiveReload)
-// gulp-csscss       : CSS redundancy analyzer
-// gulp-jshint       : JavaScript code quality tool
-// gulp-load-plugins : Automatically load Gulp plugins
-// gulp-minify-css   : Minify CSS
-// gulp-parker       : Stylesheet analysis tool
-// gulp-plumber      : Prevent pipe breaking from errors
-// gulp-rename       : Rename files
-// gulp-sass         : Compile Sass
-// gulp-uglify       : Minify JavaScript with UglifyJS
-// gulp-util         : Utility functions
-// gulp-watch        : Watch stream
-// react             : React JavaScript library
-// reactify          : Browserify transform for JSX
-// run-sequence      : Run a series of dependent Gulp tasks in order
+// babelify            : Babel Browserify transform
+// browserify          : Browser-side require()
+// gulp                : The streaming build system
+// gulp-autoprefixer   : Prefix CSS
+// gulp-concat         : Concatenate files
+// gulp-connect        : Gulp plugin to run a webserver (with LiveReload)
+// gulp-csscss         : CSS redundancy analyzer
+// gulp-jshint         : JavaScript code quality tool
+// gulp-load-plugins   : Automatically load Gulp plugins
+// gulp-minify-css     : Minify CSS
+// gulp-parker         : Stylesheet analysis tool
+// gulp-plumber        : Prevent pipe breaking from errors
+// gulp-rename         : Rename files
+// gulp-sass           : Compile Sass
+// gulp-uglify         : Minify JavaScript with UglifyJS
+// gulp-util           : Utility functions
+// gulp-watch          : Watch stream
+// pump                : Pipe streams together and close all of them if one of them closes
+// react               : React JavaScript library
+// reactify            : Browserify transform for JSX
+// run-sequence        : Run a series of dependent Gulp tasks in order
+// vinyl-source-stream : Use conventional text streams at the start of your gulp or vinyl pipelines
 //
 // -------------------------------------
 
-var gulp    = require( 'gulp' );
-var run     = require( 'run-sequence' );
-var plugins = require( 'gulp-load-plugins' )( {
+var gulp       = require( 'gulp' );
+var run        = require( 'run-sequence' );
+var browserify = require( 'browserify' );
+var source     = require( 'vinyl-source-stream' );
+var buffer     = require( 'vinyl-buffer' );
+var plugins    = require( 'gulp-load-plugins' )( {
 
   rename : {
-    'gulp-minify-css': 'cssmin'
+    'gulp-minify-css'     : 'cssmin'
   }
 
 } );
@@ -120,6 +125,7 @@ var options = {
   js : {
     files       : [ 'source/javascripts/main.js', 'source/javascripts/**/*.js' ],
     file        : 'source/javascripts/main.js',
+    buildFile   : 'build/javascripts/application.js',
     destination : 'build/javascripts'
   },
 
@@ -175,13 +181,15 @@ gulp.task( 'build', function() {
 
 gulp.task( 'browserify', function() {
 
-  gulp.src( options.browserify.file )
-    .pipe( plugins.plumber() )
-    .pipe( plugins.browserify( {
-      transform: [ 'babelify', 'reactify' ]
-    } ) )
+  browserify( options.browserify.file )
+    .transform( 'babelify', { presets: [ 'es2015', 'react' ] } )
+    .bundle()
+    .on( 'error', function( error ) {
+      plugins.util.log( error );
+    } )
+    .pipe( source( options.browserify.outputFile ) )
+    .pipe( buffer() )
     .pipe( plugins.uglify() )
-    .pipe( plugins.concat( options.browserify.outputFile ) )
     .pipe( gulp.dest( options.browserify.destination ) )
     .pipe( plugins.connect.reload() );
 
